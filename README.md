@@ -1,2 +1,2 @@
 # Coroutine-Kotlin
-![alt text](https://codingwithmitch.s3.amazonaws.com/static/building-a-website-django-python/images/Python_web_development.png "Title")
+![alt text](https://github.com/shrinidhi99/Coroutine-Kotlin/blob/master/Coroutine-Kotlin/app/src/main/res/drawable/readmelogo.jpeg "Title")

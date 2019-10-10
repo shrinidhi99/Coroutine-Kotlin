@@ -3,6 +3,9 @@ package com.example.coroutinekotlin
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.button
+import kotlinx.android.synthetic.main.activity_main.text
+import kotlinx.android.synthetic.main.activity_main3.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -18,6 +21,27 @@ class Main3Activity : AppCompatActivity() {
             CoroutineScope(IO).launch {
                 fakeApiRequest()
             }
+        }
+        button2.setOnClickListener {
+            setNewText("Clicked!")
+            fakeApiRequestSequential()
+        }
+    }
+
+    private fun fakeApiRequestSequential() {
+        CoroutineScope(IO).launch {
+            val executionTime = measureTimeMillis {
+                val result1 = async {
+                    println("debug: launching job1: ${Thread.currentThread().name}")
+                    getResult1FromApiSeq()
+                }.await()
+                val result2 = async {
+                    println("debug: launching job2: ${Thread.currentThread().name}")
+                    getResult2FromApiSeq(result1)
+                }.await()
+                println("debug: got result2: $result2")
+            }
+            println("debug: total time elapsed: $executionTime ms.")
         }
     }
 
@@ -84,5 +108,18 @@ class Main3Activity : AppCompatActivity() {
             }
             println("debug: total time elapsed: $executionTime")
         }
+    }
+
+    private suspend fun getResult1FromApiSeq(): String {
+        delay(1000)
+        return "Result #1"
+    }
+
+    private suspend fun getResult2FromApiSeq(result1: String): String {
+        delay(1700)
+        if (result1.equals("Result #1")) {
+            return "Result #2"
+        }
+        throw CancellationException("Result #1 was incorrect...")
     }
 }
